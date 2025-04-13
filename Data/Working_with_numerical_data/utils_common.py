@@ -1,12 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
-plt.style.use('deeplearning.mplstyle')
-dlblue = '#0096ff';
-dlorange = '#FF9300';
-dldarkred = '#C00000';
-dlmagenta = '#FF40FF';
-dlpurple = '#7030A0';
+style_path = os.path.join(os.path.dirname(__file__), 'deeplearning.mplstyle')
+plt.style.use(style_path)
+dlblue = '#0096ff'
+dlorange = '#FF9300'
+dldarkred = '#C00000'
+dlmagenta = '#FF40FF'
+dlpurple = '#7030A0'
 dlcolors = [dlblue, dlorange, dldarkred, dlmagenta, dlpurple]
 dlc = dict(dlblue='#0096ff', dlorange='#FF9300', dldarkred='#C00000', dlmagenta='#FF40FF', dlpurple='#7030A0')
 
@@ -50,3 +52,29 @@ def compute_cost(X, y, w, b):
         cost = cost + (f_wb_i - y[i]) ** 2  # squared error
     cost = cost / (2 * m)
     return cost
+
+def compute_gradient(X, y, w, b):
+    """
+    Computes the gradient for linear regression
+    Args:
+      X (ndarray (m,n)): Data, m examples with n features
+      y (ndarray (m,)) : target values
+      w (ndarray (n,)) : model parameters  
+      b (scalar)       : model parameter
+    Returns
+      dj_dw (ndarray Shape (n,)): The gradient of the cost w.r.t. the parameters w.
+      dj_db (scalar):             The gradient of the cost w.r.t. the parameter b.
+    """
+    m,n = X.shape           #(number of examples, number of features)
+    dj_dw = np.zeros((n,))
+    dj_db = 0.
+
+    for i in range(m):
+        err = (np.dot(X[i], w) + b) - y[i]
+        for j in range(n):
+            dj_dw[j] = dj_dw[j] + err * X[i,j]
+        dj_db = dj_db + err
+    dj_dw = dj_dw/m
+    dj_db = dj_db/m
+
+    return dj_db,dj_dw
